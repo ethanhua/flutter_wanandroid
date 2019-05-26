@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/router/router.dart';
 import 'package:flutter_wanandroid/utils/text_utils.dart';
 
+import 'datasource/db_provider.dart';
 import 'datasource/model/article.dart';
 
 class ArticleItemView extends StatelessWidget{
@@ -79,10 +80,11 @@ class ArticleItemView extends StatelessWidget{
               ),
               Offstage(
                 offstage: article.envelopePic.isEmpty,
-                child: ClipRRect(
+                child: article.envelopePic.isEmpty ? Text("") : ClipRRect(
                   borderRadius: BorderRadius.circular(2),
                   child: Image(
-                    image: NetworkImage(article.envelopePic),
+                    image: NetworkImage(
+                        article.envelopePic),
                     width: 36,
                   ),
                 ),
@@ -90,7 +92,10 @@ class ArticleItemView extends StatelessWidget{
             ],
           ),
         ),
-        onTap: (){Router().openArticle(context, article);},
+        onTap: (){
+          ReadHistoryDbProvider().update(article);
+          Router().openArticle(context, article);
+        },
      );
   }
 

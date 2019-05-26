@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wanandroid/router/router.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'account_manager.dart';
+import 'datasource/data_repository.dart';
 import 'datasource/model/article.dart';
 
 class WebPage extends StatefulWidget {
@@ -26,10 +29,25 @@ class WebPage extends StatefulWidget {
 }
 
 class _WebPageState extends State<WebPage> {
-  bool _like = false;
-
   void _actionLike() {
-
+    if (!AccountManager.instance.isLogin()) {
+      Router().openLogin(context);
+      return;
+    }
+    print("收藏:${widget.article.collect}");
+    if (widget.article.collect) {
+      DataRepository().unCollect(widget.article).then((bool success) {
+        setState(() {
+          widget.article.collect = false;
+        });
+      });
+    } else {
+      DataRepository().collect(widget.article).then((bool success) {
+        setState(() {
+          widget.article.collect = true;
+        });
+      });
+    }
   }
 
   void _openInBrowser() {
@@ -50,8 +68,10 @@ class _WebPageState extends State<WebPage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(_like ? Icons.favorite : Icons.favorite_border),
-            color: _like ? Colors.red : Colors.white,
+            icon: Icon(widget.article.collect
+                ? Icons.favorite
+                : Icons.favorite_border),
+            color: widget.article.collect ? Colors.red : Colors.white,
             onPressed: _actionLike,
           ),
           IconButton(
@@ -61,6 +81,12 @@ class _WebPageState extends State<WebPage> {
               ),
               onPressed: _openInBrowser)
         ],
+      ),
+      hidden: true,
+      initialChild: Container(
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }

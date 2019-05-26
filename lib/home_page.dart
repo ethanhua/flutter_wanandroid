@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'article_item_view.dart';
 import 'datasource/data_repository.dart';
 import 'datasource/model/article.dart';
@@ -10,13 +11,17 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   List<Article> _list = List();
 
   @override
   void initState() {
     super.initState();
     DataRepository().listHome(0).then((data) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _list = data;
       });
@@ -43,14 +48,16 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
           )
         ]),
         Expanded(
-          child: ListView.separated(
-              itemCount: _list.length,
-              itemBuilder: (BuildContext context, int position) {
-                return _getRow(position);
-              },
-              separatorBuilder: (BuildContext context, int position) {
-                return Divider(height: 1, color: Color(0xFFE0E0E0));
-              }),
+          child: _list.length > 0
+              ? ListView.separated(
+                  itemCount: _list.length,
+                  itemBuilder: (BuildContext context, int position) {
+                    return _getRow(position);
+                  },
+                  separatorBuilder: (BuildContext context, int position) {
+                    return Divider(height: 1, color: Color(0xFFE0E0E0));
+                  })
+              : Center(child: CircularProgressIndicator()),
         )
       ],
     );

@@ -9,6 +9,7 @@ class User {
 
   String username;
   String password;
+  @JsonKey()
   String _cookie;
 
   // 服务器cookie过期时间
@@ -31,6 +32,9 @@ class User {
 
   set cookie(String cookie) {
     this._cookie = cookie;
+    if (cookie == null || cookie.isEmpty) {
+      return;
+    }
     try {
       this._cookieExpireTime = DateUtils.formatExpiresTime(this._cookie);
     } catch (e) {
@@ -46,5 +50,4 @@ class User {
   get cookieExpireTime {
     return _cookieExpireTime;
   }
-
 }

@@ -95,12 +95,18 @@ class _UserPage extends State<UserPage> {
   Widget _getListItem(int index) {
     if (index == 0) {
       return ListTile(
+          onTap: () {
+            Router().openReadHistory(context);
+          },
           leading: Icon(Icons.history),
           title: Text("阅读历史"),
           trailing: Icon(Icons.keyboard_arrow_right));
     }
     if (index == 1) {
       return ListTile(
+          onTap: () {
+            Router().openCollectList(context);
+          },
           leading: Icon(Icons.favorite),
           title: Text("收藏"),
           trailing: Icon(Icons.keyboard_arrow_right));

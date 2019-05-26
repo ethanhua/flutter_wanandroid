@@ -109,6 +109,9 @@ class _ProjectListPageState extends State<ProjectListPage> {
   void initState() {
     super.initState();
     DataRepository().listProject(0, _chapterId).then((list) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _projectList = list;
       });
@@ -121,13 +124,15 @@ class _ProjectListPageState extends State<ProjectListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        itemCount: _projectList.length,
-        itemBuilder: (BuildContext context, int position) {
-          return _getRow(position);
-        },
-        separatorBuilder: (BuildContext context, int position) {
-          return Divider(height: 1, color: Color(0xFFE0E0E0));
-        });
+    return _projectList.length > 0
+        ? ListView.separated(
+            itemCount: _projectList.length,
+            itemBuilder: (BuildContext context, int position) {
+              return _getRow(position);
+            },
+            separatorBuilder: (BuildContext context, int position) {
+              return Divider(height: 1, color: Color(0xFFE0E0E0));
+            })
+        : Center(child: CircularProgressIndicator());
   }
 }

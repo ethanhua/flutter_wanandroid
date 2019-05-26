@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wanandroid/datasource/model/article.dart';
 
+import '../collect_page.dart';
 import '../login_register_page.dart';
+import '../read_history_page.dart';
 import '../web_page.dart';
 
 class Router {
@@ -25,6 +27,20 @@ class Router {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
       return LoginRegisterPage();
+    }));
+  }
+
+  openReadHistory(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return ReadHistoryPage();
+    }));
+  }
+
+  openCollectList(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return CollectPage();
     }));
   }
 }

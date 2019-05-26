@@ -22,7 +22,7 @@ Article _$ArticleFromJson(Map<String, dynamic> json) {
       json['origin'] as String,
       json['prefix'] as String,
       json['projectLink'] as String,
-      (json['publishTime'] as num)?.toDouble(),
+      json['publishTime'] as int,
       json['superChapterId'] as int,
       json['superChapterName'] as String,
       (json['tags'] as List)

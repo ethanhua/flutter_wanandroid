@@ -18,6 +18,10 @@ class DataRepository {
   static const PROJECT_LIST = "/project/list/";
   static const USER_REGISTER = "/user/register";
   static const USER_LOGIN = "/user/login";
+  static const COLLECT_LIST = "/lg/collect/list/";
+  static const COLLECT_SITE_INNER = "/lg/collect/";
+  static const COLLECT_SITE_OUTER = "/lg/collect/add/";
+  static const UN_COLLECT = "/lg/uncollect_originId/";
 
   Future<List<Article>> listHome(int page) async {
     var url = "$BASE_URL$HOME_LIST$page$SUFFIX_JSON";
@@ -49,6 +53,42 @@ class DataRepository {
     return apiResult.data.datas;
   }
 
+  Future<List<Article>> listCollect(int page) async {
+    var url = "$BASE_URL$COLLECT_LIST$page$SUFFIX_JSON";
+    Response<String> response =
+        await Dio().get<String>(url, options: _getOptions());
+    var apiResult = ApiListResult<Article>.fromJson(jsonDecode(response.data));
+    return apiResult.data.datas;
+  }
+
+  Future<bool> collect(Article article) async {
+    var url;
+    var formData;
+    if (article.link.contains(BASE_URL)) {
+      url = "$BASE_URL$COLLECT_SITE_INNER${article.id}$SUFFIX_JSON";
+    } else {
+      url = "$BASE_URL$COLLECT_SITE_OUTER$SUFFIX_JSON";
+      formData = FormData.from({
+        "title": article.title,
+        "author": article.author,
+        "link": article.link
+      });
+    }
+    print("collect:$url");
+    Response response =
+        await Dio().post(url, data: formData, options: _getOptions());
+    checkResultSuccess(response);
+    return true;
+  }
+
+  Future<bool> unCollect(Article article) async {
+    var url = "$BASE_URL$UN_COLLECT${article.id}$SUFFIX_JSON";
+    print("uncollect:$url");
+    Response response = await Dio().post(url, options: _getOptions());
+    checkResultSuccess(response);
+    return true;
+  }
+
   Future<User> login(String userName, String password) async {
     var url = "$BASE_URL$USER_LOGIN";
     print("login:" + url);
@@ -78,7 +118,7 @@ class DataRepository {
 
   String _getCookieFromResponse(Response response) {
     print("_getCookieFromResponse" + response.data.toString());
-    var cookie ="";
+    var cookie = "";
     response.headers.forEach((String name, List<String> values) {
       if (name == "set-cookie") {
         cookie = json
